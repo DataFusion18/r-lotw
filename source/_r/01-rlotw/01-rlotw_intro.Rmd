@@ -18,6 +18,8 @@ The R Lesson of the Week (R-LOTW) club will attempt to provide novice users expo
 5) generate meaningful and production quality plots for visualizing data; and 
 6) produce professional and reproducible reports (using the `knitr` and `rmarkdown` packages)
 
+<!--more-->
+
 There are 3 Rules to the R-LOTW Club:
 
 - Rule number 1: You never talk about R-LOTW club

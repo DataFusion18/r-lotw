@@ -43,7 +43,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <body>
 
-<div class="container">
+<div class="container-fluid">
 
 
 <div id="header">
@@ -65,6 +65,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>generate meaningful and production quality plots for visualizing data; and</li>
 <li>produce professional and reproducible reports (using the <code>knitr</code> and <code>rmarkdown</code> packages)</li>
 </ol>
+<!--more-->
+
 <p>There are 3 Rules to the R-LOTW Club:</p>
 <ul>
 <li>Rule number 1: You never talk about R-LOTW club</li>
@@ -75,13 +77,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="course-structure" class="section level2">
 <h2>Course Structure</h2>
 <p>To keep a sensible balance between commitments to this course and other work requirements and our personal lives, the focus of this course will be weekly exercises. Each week, students in the club will receive an email with at least two files. One will contain the lesson(s) for the week and, if written well, should provide a combination of explanatory text and example code that students can follow along and demonstrate for themselves. In addition to the weekly lesson, students will be given a homework assignment that will require the students to apply what they have learned from the lesson and then develop a report using <code>knitr</code> and <code>rmarkdown</code>.</p>
-<p>Lessons will go out on Monday mornings and homework will be due the following Monday at noon (local time).</p>
+<p>Lessons will go out on Monday mornings and homework will be due the following Monday at noon (local time). The weekly lessons will come as attache .html files. For best viewing, download these files to your local machine and open in Chrome. If you open by directly clicking on the link from within gmail, the .html file will not render with full formatting.</p>
 </div>
 <div id="installing-r-and-rstudio" class="section level2">
 <h2>Installing R and RStudio</h2>
-<p>R can be installed from the <a href="http://cran.us.r-project.org/">CRAN website</a>. Windows users working under enterprise security restrictions, should work with their IT staff to install R in a location that allows proper write permissions. For AFSC users, the current best practice is to change the install location/path of R to your ‘D’ drive. AFSC windows users should NOT install R, RStudio or any of the supporting programs to the ‘My Documents’ folder.</p>
-<p>OS X and Linux users should be able to install R with typical settings and less headache.</p>
-<p><a href="http://www.rstudio.com/ide/download/preview">RStudio (preview release)</a> is an Integrated Development Environment (IDE) developed for R. RStudio is cross-platform and should be installed using default settings for all platforms. This provides a more capable software interface for developing R scripts, creating plots, knitr documents, version control, package management, etc. All lessons will presume the use of RStudio as the IDE.</p>
+<p>R can be installed from the <a href="http://cran.us.r-project.org/">CRAN website</a>. Windows users working under enterprise security restrictions, should work with their IT staff to install R in a location that allows proper write permissions. For AFSC users, NMML IT staff have instructions for installing R, RStudio, MiKTeX and RTools in a manner that is compatible with our networking and securtiy settings. The most important aspect of the install for AFSC windows users is to, prior to installing any of the software, create a Windows system environment variable R_LIBS and set the value equal to the <code>C:\Users\user.name\Rlibs</code>. This will force R to install and manage any libraries and packages within a directory that you have write permissions to.</p>
+<p>OS X users should be able to install R with typical settings and less headache.</p>
+<p><a href="http://www.rstudio.com/ide/download/preview">RStudio (preview release)</a> is an Integrated Development Environment (IDE) developed for R. RStudio is cross-platform and should be installed using default settings for all platforms. This provides a more capable software interface for developing R scripts, creating plots, knitr documents, version control, package management, etc. All lessons will presume the use of RStudio as the IDE. You must install the RStudio Preview Release linked to above for full compatibility.</p>
 <p>In addition to R and RStudio, you will need to install support for TeX documents in order to create some types of PDF documents. Windows users should download and install <a href="http://miktex.org/download">MikTex</a> and OS X users should download and install <a href="http://tug.org/mactex/downloading.html">MacTex</a>. It is probably best if you install TeX support prior to installing RStudio as RStudio will auto-detect your TeX install.</p>
 <p>Lastly, Windows users will need to install the latest version of <a href="http://cran.r-project.org/bin/windows/Rtools">RTools</a></p>
 </div>
