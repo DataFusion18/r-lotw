@@ -1,0 +1,188 @@
+---
+title: "R-LOTW - Week 4"
+author: "Josh M London"
+date: "June 5, 2014"
+output: html_document
+---
+
+```{r,echo=FALSE}
+options(width = 80)
+```
+
+## This Week's Objectives
+
+1) Introduction to For-Loops
+2) Use a for-loop to combine multiple data frames using `rbind()` 
+3) Use a for-loop to summarize dive data by seal
+
+## Introduction to For Loops
+
+One key benefit of learning any programming language is the ability to automate and speed up repetitive tasks. If we revisit the cooking recipe analogy from a few weeks ago, let's suppose you have a recipe that you like so much you want to make it for dinner every night for an entire week. In order to make that recipe, you need a pre-defined set of ingredients and you need to purchase and organize those ingredients every time you make the recipe. So, you could plan to stop by the store every day after work and pick up the same ingredients each day. Or, the weekend before, you could make a trip to Costco, buy everything in bulk and then organize and proportion those ingredients into daily units. You might also label each of those units with number or a day of the week. With the later approach, you would only need to grab the next daily unit of ingredients when you get home and then proceed with the recipe.
+
+For-loops require three components:
+
+1) a vector of values (ingredients)
+2) a counter (ingredient labels)
+3) a function or series of repeatable commands (recipe)
+
+Below is a simple for-loop in R that takes the values 1 through 10 (the ingredients) and then multiplies them by 2 and prints the output (the recipe). The variable **i** is used as a counter (label) that represents each value in our vector.
+
+```{r}
+for (i in 1:10) {
+  print(i*2)
+}
+```
+
+In plain English, the above for-loop says *for each value from 1 to 10, iteratively set i equal to each value, multiply i by 2 and print the result*. 
+
+### Short Tangent to Discuss Vectorization in R
+
+The previous example is very simplified task and, as is often the case in R, there are multiple ways to accomplish this same task. Because the focus of this week's lesson is for-loops I do not want to diverge too much, but I think it is important to point out one of these alternative approaches because it is fundamental to many ways the R language works. And, we will be visiting this concept a number of times in the future. So, best to start understanding it now.
+
+R provides us the ability to not only set a variable equal to a single value (e.g. `a<-1`), but we can also set a varaible equal to a set of variables, or a vector (e.g. `a<-1:10`, `b<-c("d","o","g")`). Just as we can peform operations and functions on a single value by referencing that variable, we can also perform operations and functions on a variable that represents a vector of values. In the later case, the operation or function is performmed on each value in the vector.
+
+```{r}
+a <- 1 # the variable a is set to the single value 1
+c <- a + 1 # add 1 to the value of a
+c
+a <- 1:10 # the variable a is set to a vector of all values from 1 to 10
+c <- a + 1 # add 1 to each value in the vector a
+c
+```
+
+**Exercise 4.1**
+
+Before we move on to discuss for-loops in more depth, take the time to play around with vectorization and see if you can use R's vectorization to accomplish the same task as is shown in the first for-loop example.
+
+## Example Usage of For-Loops
+
+In previous weekly lessons, we've been working with two \*.csv files of dive behavior. In reality, we have many more \*.csv files from a number of seals. As you've probably noticed, the code to input and process those two \*.csv is very similar and really only differs by the name of the \*.csv file. If you wanted to import all of those \*.csv files, you could just copy and paste the code over and over again in your R script, then manually change the file path to represent each \*.csv file name. However, using a for-loop would be far more elegant and efficient.
+
+The first thing we need to do is build our vector of values we want to loop over (i.e. our collection of ingredients). In this case the vector of values that we want to loop over is the file paths and names for each of our \*.csv files.
+
+We could create this vector manually, with something like the example below
+
+```{r,eval=FALSE}
+my_files <- c("99279-Behavior.csv","99280-Behavior.csv")
+```
+
+This, however, could become rather tedious if we expand to all of the files we are interested in processing. Thankfully, R has a built-in function, **list.files()** that will do this for us (as always, remember, if you would like to read the built-in help for a particular function, you can type `?list.files` in the console and access the help). 
+
+Additionally, and especially useful, we can provide a **pattern** for **list.files()** to use as a filter to only return file paths for files of a particular type or naming scheme. This is a great benefit for this example because the data downloaded from Wildlife Computers include additional data files we are not interested in for this exercise.
+
+For this week's example, I have created a **behav-data** folder within **R-LOTW/04-rlotw** and within that folder have copied over all the downloaded data from 20 deployments ...*These data files are available as a zip file from Google Drive and you will recieve an email providing you details for accessing and downloading these files to your computer*.
+
+The following R code uses the **list.files()** function to return a character vector of file paths for each files inside **behav-data** that ends with the naming form *-Behavior.csv*.
+
+```{r}
+my_behav_files <- list.files(path='/Users/josh.london/@work/R-LOTW/04-rlotw/behav-data',
+                             # on OS X path='~/@work/R-LOTW/04-rlotw/behav-data' is also valid
+                             # alternative relative path path='behav-data'
+                             pattern='*-Behavior.csv', 
+                             # the asterix is a wild card used to represent for any character
+                             recursive=TRUE,
+                             # recursive instructs the function to examin all child folders
+                             full.names=TRUE
+                             # full.names returns the full file path to reduce any abiguity
+                             )
+```
+
+**list.files()** requires us to, at a minimum, pass a file path character for the directory/folder we are interested in. In this case, I provided the full file path (`path='/Users/josh.london/@work/R-LOTW/04-rlotw/behav-data'`). Many of you have had difficulties troubleshooting issues related to file paths so this is another opportunity for you to wrap your head around the concept. Since my R Markdown file is saved within the '**/Users/josh.london/@work/R-LOTW/04-rlotw**' folder, I could also have provided the relative path (`path='behav-data'`).
+
+In addition to providing a file path, we can also provide a file name pattern. Since we are only interested in the files that end with *-Behavior.csv*, we need a way to tell R to only return files that end in *-Behavior.csv* but can be preceded by another character. To do this, we use an asterix to represente a wild card place holder for any character value and any number of characters (`pattern='\*-Behavior.csv'`. In other situations, you may just want to return a list of comma-seperated files (or any other file extension of interest) and so you could use `path='\*.csv'`. Note, the **pattern** parameter for the **list.files()** function expects a character vector, so the naming pattern is surrounded by single quotes.
+
+If you read the help files, you'll sometimes see references to **regular expressions**. This is a general term used to describe a language for describing character patterns. It is pretty complicated and not for the faint of heart. That said, if you understand the concepts, it can be an extremely sophisticated tool for programming character pattern recognition. Feel free to read up on it in your spare time, and when you become an expert, you can start your own 'regular expression lesson of the week' ... I could certainly use it.
+
+Lastly, we provide two additional parameters to the **list.files()** function: **recursive** and **full.names**. Recursive is a term used to instruct **list.files()** to look inside any folders that are present within the file path you have specified. By default, **list.files()** presumes `recursive=FALSE` so it will only return files within the specific directory path. In our case, the varoius data files are organized into folders by PTT ID and we want **list.files()** to examine all of these folders for files that end in *-Behavior.csv*. The **full.names** parameter instructs **list.files()** to return the full file paths for each file instead of just the relative paths. This limits any abiguity as to where the file is located and is, generally, a good practice for reducing any confusion over file paths.
+
+Now that we have our vector of ingredients (file names), we need to develop a recipe to read the data into a data frame, specify our factor data types and store the data frame in memory. After the for loop is complete, we will want to merge all of the data into a single data frame. If you compare the code below with example code from weeks 2 and 3, much of it should look familiar. There are, however, a few new concepts.
+
+First, you'll notice we start by creating a **list** named **seal_list**. A list is just that, a list of elements and those elements can be of any data type. You may be thinking, well that's what a vector is. But, unfortunately, a vector can only hold one data type. So, you can have a vector of numbers or a vector of character values or a vector of dates. But, you cannot have a vector with both numers and characters. A **list**, however, can contain different data types.
+
+If you have a vector of 10 numbers and you want to return just the 4th number, we use R's indexing nomenclature which uses single square brackets (e.g. `myvector[4]`) immediately after an element. The nomenclature is similar for lists, however, we use double square brackets (e.g. `mylist[[4]]`).
+
+The first part of this code creates an empty list, **seal_list**, that is the same length as the number of files. To get the length of a vector, we use the **length()** function. (You'll remember, however, that to get the length of a data frame we use **nrow()** ... don't get those confused). Like us, R can sometimes have a hard time with memory and, if it needs to store some values, it likes to know ahead of time how much space to allocate.
+
+The rest of the code should look familiar to you as a for-loop with code similar to what we worked on in weeks 2 and 3. I would draw your attention to the use of `seal_list[[i]]` and `my_behav_files[i]`. This is the way we refer to each element in our empty list and each of the file paths in our vector. **i** starts out with the value of 1 and, then each time we loop through the code, **i** increases by 1 until it reaches `r length(my_behav_files)` (the value returned by `length(my_behav_files)`). 
+
+In, hopefully, plain language the for-loop runs the code between then curly braces ({}) `r length(my_behav_files)` times. Each time, it pulls the i-th file path from our vector, **my_behav_files** and passes that to **read.csv()** and stores the result in the i-th element of our list **seal_list**.
+
+```{r}
+# create a list to hold our seal behavior data frames
+# use length(my_behav_files) to specify the length of the list
+seal_list <- vector("list",length(my_behav_files))
+
+# now lets create our for loop and pull code from previous weeks
+for (i in 1:length(my_behav_files)) { 
+  seal_list[[i]] <- read.csv(file=my_behav_files[i],
+                             stringsAsFactors=FALSE)
+  seal_list[[i]] <- seal_list[[i]][,c('Ptt','Start','End','What','DepthMax','DurationMax')]
+  seal_list[[i]]$Ptt <- as.factor(seal_list[[i]]$Ptt)
+  seal_list[[i]]$What <- as.factor(seal_list[[i]]$What)
+}
+```
+
+At this point we have a list, **seal_list**, of data frames and each data frame represents the data from one of our *-Behavior.csv* files. 
+
+```{r}
+class(seal_list[[1]])
+head(seal_list[[1]])
+
+class(seal_list[[4]])
+head(seal_list[[4]])
+```
+
+In week 3, we were introducted to the **rbind()** function as a way to merge one data frame with another. Here, we want to take all of the data frames in our list and merge them into one data frame. As you might expect, we can do this with a for-loop
+
+```{r}
+seal_data <- NULL # create a place holder for us to initially rbind to
+
+for (i in 1:length(seal_list)) {
+  seal_data <- rbind(seal_data,seal_list[[i]])
+}
+```
+
+If you search around the internet, you may see another approach to accomplish this task. R has a function **do.call()** that can be used for this and similar tasks. In some cases, it may be a more efficient proccess. Essentially, **do.call()** says iteratively do this function over this list of elements.
+
+```{r, eval=FALSE}
+seal_data <- do.call("rbind",seal_list)
+```
+
+Now we have a single data frame with all the data from 16 different data frames. On my computer, this entire process takes 1.878 seconds !
+
+Just to convince ourselves that we actually have all the data from our csv files into our **seal_data** data frame, lets run few tests
+
+```{r}
+# let's see how many rows our in our seal_data data frame
+nrow(seal_data)
+```
+
+```{r}
+# we'll use the unique() function to return and count the number of Ptt IDs
+unique(seal_data$Ptt)
+length(unique(seal_data$Ptt))
+```
+
+```{r}
+# we'll look at the head and the tail of the data to make sure it looks reasonable
+head(seal_data)
+tail(seal_data)
+```
+
+Great! Now that we have all this data in a single data frame, we have a number of analyses, plots and other exploratory tasks we can proceed with. But, that will have to wait for the next lesson.
+
+## Homework
+
+This week's lesson introduced some new concepts that might take you a while to fully grasp and understand. You homework this week is to simply work through the examples on your own. Run the code in an R script and make sure you get the same answers. Pay close attention to the for-loop code and see if you can create your own for-loop to accomplish a simple task.
+
+Once you've had time to work with the examples, your homework this week is to send me at least two questions regarding this lesson (or any of the previous lessons) that either 
+
+1) you don't understand, 
+2) you'd like some clarfication on or 
+3) you just want to learn more about. 
+
+If you want, you can create an R Markdown file and include some example R code in your questions. If you go this route and want to include R code within a Knitr block, but not have it actually run (since you may have questions why the code doesn't work), you can tell Knitr to not evaluate the R code. Simply add `eval=FALSE` inside the curly braces at the start of the Knitr block
+
+` ```{r,eval=FALSE} `
+
+However, submitting questions via email is just fine.

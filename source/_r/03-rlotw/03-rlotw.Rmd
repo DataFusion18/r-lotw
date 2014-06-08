@@ -1,0 +1,132 @@
+---
+title: "R-LOTW - Week 3"
+author: "Josh M London"
+date: "May 27, 2014"
+output: html_document
+---
+
+```{r,echo=FALSE}
+options(width = 80)
+```
+
+## This Week's Objectives
+
+1) Review Key Points from Week 2
+2) Combine 2 data frames using `rbind()` 
+3) ggplot with dive data comparing 2 seals
+
+## Review Key Points from Week 2
+
+Week 2 was our first real homework exercise and there were some questions that arose during the week that I thought I would focus on before we dive deeper. As you all know, there are no stupid questions and I welcome your questions during the week. As long as my time allows, I'll not only respond to your question, but also update the website lesson for that week to reflect any changes or clarifications. So, the take home message is to **ask questions** and **refer to the weekly lesson web page** for the most up-to-date information.
+
+### Working in RStudio with the R Console, R Scripts and R Markdown
+
+Many of you have had some exposure to R in the past and have only used the standard R program where you enter commands directly into the R console. For simple commands, quick exploration of your data or just testing code, the R console can be quite useful. However, it has two main drawbacks:
+
+1) anything you enter in the R console is evaluated (i.e. simple typos or mistakes can delete, edit or foobar up your code and analysis)
+2) you can't save your code for use later on or for further editing and refinement
+
+Working with an R Script (*.R) is the most effective way to develop, run and save your code. Think of an R Script as a recipe for your analysis. When cooks develop a recipe, they will write out the instructions and measurements ahead of time. Then, while testing and refining the recipe, they may only do a few steps at a time. Tasting the results along the way. Eventually, they will have a recipe that works and produces the results they want. An R Script is the recipe that allows you to develop and create a scientific dessert.
+
+RStudio provides a number of added benefits when using R Scripts. The code you write is automatically color-coded and indented for easier readability. Parentheses and curly-braces are auto-completed for you. And, you can use the run buttons in RStudio to run the current line or the current selection. This allows you to step through your code and confirm things are working as you expect.
+
+Keeping with the same analogy, you can think of R Markdown as a cookbook. Not only does a cookbook combine multiple recipes, it also provides stories, history and context to the recipes. R Markdown is an evolution of your R Script. Many times, you'll be satisfied with an R Script as it will provide simple instructions for a simple analysis. You can even add simple documentation with hastag comments. But, there are a number of times when you will be expected to take the analysis in the R Script and turn it into a report or manuscript. R Markdown allows you to combine those efforts into one reproducible file where analysis is run in concert with creation of the document.
+
+### Understanding file paths
+
+Specifying the file paths when reading the \*.csv data files into R proved to be another tricky area for me to explain and for people to grasp. This is to be expected as, these days, many of us interact with files on our computers by clicking through the Explorer or Finder applications. R needs us to specify a text based specification of where the file lives on our computers. This is commonly referred to as the **file path**. There are some significant differences between operating systems in how file paths are specified, but R is mostly aware of these differences and there are some conventions you can adopt that make your code more universal.
+
+In R, file paths are always specified as a character string and must be surrounded by single quotes.
+
+#### Absolute Paths
+
+There are two methods for specifying a file path: **absolute paths** and **relative paths**. Absolute paths provide a complete listing of the directory structure from your systems top-level or root directory. On windows this typically starts with **C:** to specify your C drive. You may have files in other drives (e.g. D, E, Z), but for most users on Windows an absolute path begins with **C:**. On OS X or Linux, drives are not specified with letters. Instead the system root starts with just a single forward slash. Usually, when working in OS X or Linux you will be pointing to files within your home directory. Given this common usage, the **~** is used as a shortcut to specify your home directory. From your root directory, the file path lists all of the directories between the root directory and your file of interest. Each of the directories listed is separated by a backslash on Windows or a forward slash on OS X or Linux. To avoid confusion, if you use a forward slash, R will convert that for you to backslash when working in Windows. I suggest you use forward slash when specifying file paths in R.
+
+Let's examine a couple of file paths:
+
+`'C:/Users/fred.flintstone/@work/my_r_code.R'`
+
+This specifies a file path for a file on a Windows machine. User Fred Flintstone has a directory he calls **\@work** where he stores his R code. To access this same location in Windows Explorer, he would start at the C drive and then open the **Users** folder, then **fred.flinstone**, then **\@work** and, finally, he would see his R file, **my_r_code.R**.
+
+`'/Users/fred.flintstone/@work/my_r_code.R'`
+
+`'~/@work/my_r_code.R'`
+
+Both of these file paths specify the same location on an OS X or Linux system. Note the **~** is shortcut for **'\/Users/fred.flintstone/'**, but is specific to the user currently logged in. So, when Wilma Flintstone logs in, the **~** is shortcut for **'\/Users/wilma.flintstone/'**.
+
+#### Relative Paths
+
+Often times, the absolute path can be a long string of directories. Not only does it get tedious to type those paths out over and over, but it is also an opportunity for typos and errors. So, we frequently use relative paths to simplify the process. Relative paths, specify the file location relative to a given location. When working in the R Console or with an R Script, this starting point is your current working directory. If Fred had his working directory set to **'\/Users/fred.flintstone/\@work'**, then he would just need to specify the file path as **'my_r_code.R'**. If he was interested in some data that he had save to a directory inside **'\@work'** named **'data'**, then the file path would be **'data/my_r_data.csv'**.
+
+The one trick to relative paths is when we are working with R Markdown files. An R Markdown file is actually evaluated with the **working directory set to the same location where the \*.Rmd file is stored**. This may be different than your current working directory or the RStudio project working directory. When migrating or copy/pasting between an R Script and an R Markdown file, you'll need to double check your file path specifications to make sure they are correct. 
+
+Also, you should **always save your R Markdown file** before hitting the knit button.
+
+## Combining Two Data Frames
+
+In the previous lesson, you learned how to load two separate csv data files into R. Each of these data files was stored in R as separate objects. Since each of these data files has the same structure (e.g. column names and data types), it will be more efficient and flexible if we combine these objects into a single data frame. You can always split the data frame back into separate objects if you change your mind (we'll cover that in the next lesson).
+
+To combine data frames, we will rely on the `rbind()` function. This is shorthand for **row bind** and you can think of it as appending the rows from one data frame to the end of another data frame. In our case, the two *.csv files with dive data have the same columns and data so appending will be pretty straightforward. In some cases, you may find yourself needing to combine data frames that are similar but not exactly the same. There are advanced options with `rbind()` that allow you to handle these special cases. For now, though, we are going to keep it simple.
+
+```{r,echo=FALSE}
+seal_99279.df <- read.csv(file='99279-Behavior.csv',
+                     stringsAsFactors = FALSE)
+# stringsAsFactors is set to FALSE because we are going to specify data types on our own
+
+# replace seal_99279.df with a subset of columns
+seal_99279.df <- seal_99279.df[,c('Ptt','Start','End','What','DepthMax','DurationMax')]
+
+# replace seal_99279.df with a subset of rows where What is equal to Dive
+seal_99279.df <- seal_99279.df[seal_99279.df$What == 'Dive',]
+
+seal_99279.df$Ptt <- as.factor(seal_99279.df$Ptt)
+seal_99279.df$What <- as.factor(seal_99279.df$What)
+
+seal_99280.df <- read.csv(file='99280-Behavior.csv',
+                     stringsAsFactors = FALSE)
+# stringsAsFactors is set to FALSE because we are going to specify data types on our own
+
+# replace seal_99280.df with a subset of columns
+seal_99280.df <- seal_99280.df[,c('Ptt','Start','End','What','DepthMax','DurationMax')]
+
+# replace seal_99280.df with a subset of rows where What is equal to Dive
+seal_99280.df <- seal_99280.df[seal_99280.df$What == 'Dive',]
+
+seal_99280.df$Ptt <- as.factor(seal_99280.df$Ptt)
+seal_99280.df$What <- as.factor(seal_99280.df$What)
+```
+
+To demonstrate this, we'll revisit our dive behavior csv files from the previous lesson. After importing both files into R, we have two data frame objects in R: **seal_99280.df** and **seal_99279.df**. Review the lesson and your homework from week 2 to remind yourself how we imported the data, subset the data to include only dive behavior and specified specific columns as factor data types.
+
+If we examine the structure of these two objects, we can see they have the same number of columns, the same column names and the same data types.
+
+```{r}
+str(seal_99280.df,width=80,strict.width="cut")
+str(seal_99279.df,width=80,strict.width="cut")
+```
+
+In order to combine these two data objects, we will use the `rbind()` function and pass the two data frame objects as parameters to the function. However, we can't just evaluate `rbind(seal_99280.df,seal_99279.df)`. We need to store the combined data frame as a new object. In this case, we'll name that object **seal_dives**.
+
+```{r}
+seal_dives <- rbind(seal_99280.df,seal_99279.df)
+str(seal_dives)
+```
+
+A few things to note and confirm the combination went as planned. The number of observations in **seal_dives** is `r nrow(seal_dives)` which is the same as if you added the number of observations in **seal_99280.df** (`r nrow(seal_99280.df)`) to the number of observations in **seal_99279.df** (`r nrow(seal_99279.df)`). You should also note that the column **Ptt** now lists 2 factor levels (`r levels(seal_dives$Ptt)`).
+
+## Compare Dive Behavior of Two Seals in One ggplot
+
+In the week 2 lesson and homework we used `ggplot()` to create a histogram of max dive depths. Now that we have data from two seals in the same data frame, we can expand on that to create a single plot that overlays data from both seals into a single histogram. We can accomplish this by adding a few details to the `ggplot()` code. We now specify **seal_dives** as the data parameter and, within the `aes()` function, we specify an additional parameter, `fill=Ptt`. This tells ggplot that we want separate histograms with different fill colors based on the levels in **Ptt**. Lastly, we add a specification, `position="dodge"` to the `geom_histogram()` function to tell ggplot to put the bars side by side.
+
+I realize, we have not gone over details of ggplot and some of this still may not make complete sense. Don't worry too much about it. I mostly want to demonstrate the value of combining multiple data frames and, how with just a few changes to the code, you can use ggplot to make a high quality and informative plot.
+
+
+```{r}
+require(ggplot2)
+p <- ggplot(data=seal_dives,aes(x=DepthMax,fill=Ptt)) + geom_histogram(position="dodge") + ggtitle('Max Dive Depths for Two Ribbon Seals')
+p
+```
+
+## Homework
+
+For this week's homework you will be creating an R Markdown file from scratch that describes your methods and produces a single histogram plot comparing **dive durations** of both seals.

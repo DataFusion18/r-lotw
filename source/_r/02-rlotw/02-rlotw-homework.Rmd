@@ -1,0 +1,44 @@
+---
+title: "R-LOTW - Week 2 - Homework"
+author: "Josh M London"
+date: "May 12, 2014"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+seal_99279.df <- read.csv(file='99279-Behavior.csv',
+                     stringsAsFactors = FALSE)
+# stringsAsFactors is set to FALSE because we are going to specify data types on our own
+
+# replace seal_99279.df with a subset of columns
+seal_99279.df <- seal_99279.df[,c('Ptt','Start','End','What','DepthMax','DurationMax')]
+
+# replace seal_99279.df with a subset of rows where What is equal to Dive
+seal_99279.df <- seal_99279.df[seal_99279.df$What == 'Dive',]
+
+seal_99279.df$Ptt <- as.factor(seal_99279.df$Ptt)
+seal_99279.df$What <- as.factor(seal_99279.df$What)
+```
+
+## Summary of Data
+
+This report describes data collected from a single satellite linked telemetry device deployed on a ribbon seal (identified by Ptt `r seal_99279.df$Ptt[1]`) in the Bering Sea during a few weeks in the spring of 2014. The tag uses depth readings to identify individual dives and surface intervals. The tag transmits the start time, end time, max depth and duration via the Argos satellite system. Here, we explore the data from this tag and provide a histogram plot of maximum dive depths.
+
+The tag data are organized by `r ncol(seal_99279.df)` columns or variables.
+
+```{r}
+str(seal_99279.df)
+```
+
+The tag identified `r nrow(seal_99279.df)` dives with a range of `r min(seal_99279.df$DepthMax)` to `r max(seal_99279.df$DepthMax)` meters deep. The mean depth of a dive was `r mean(seal_99279.df$DepthMax)`.
+
+## Histogram Plot
+
+```{r}
+p <- ggplot(seal_99279.df,aes(x=DepthMax)) + geom_histogram() + ggtitle('Max Dive Depths for a Ribbon Seal')
+p
+```
