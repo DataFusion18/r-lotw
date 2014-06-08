@@ -5,7 +5,7 @@ date: "May 12, 2014"
 output: html_document
 ---
 
-```{r}
+```{r,echo=FALSE}
 options(width = 80)
 ```
 
@@ -17,6 +17,8 @@ options(width = 80)
 4) Learn about and specify data types for fields
 5) Create a basic plot using the ggplot2 package
 6) Create your first R-Markdown report
+
+<!--more-->
 
 ## Getting Familiar with RStudio
 
