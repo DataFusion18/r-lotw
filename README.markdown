@@ -1,41 +1,24 @@
-## What is Octopress?
+## Purpose and Objective
 
-Octopress is [Jekyll](https://github.com/mojombo/jekyll) blogging at its finest.
+Over the past few years, a number of novice or rare users of R have expressed a desire to learn more about R and, especially, how to use the R programming language to organize, munge and explore data. Too often, users are exposed to the R programming language as a vehicle to learn statistical analysis and not as a vehicle for learning concepts of computer programming, data manipulation and data exploration.
 
-1. **Octopress sports a clean responsive theme** written in semantic HTML5, focused on readability and friendliness toward mobile devices.
-2. **Code blogging is easy and beautiful.** Embed code (with [Solarized](http://ethanschoonover.com/solarized) styling) in your posts from gists, jsFiddle or from your filesystem.
-3. **Third party integration is simple** with built-in support for Pinboard, Delicious, GitHub Repositories, Disqus Comments and Google Analytics.
-4. **It's easy to use.** A collection of rake tasks simplifies development and makes deploying a cinch.
-5. **Ships with great plug-ins** some original and others from the Jekyll community &mdash; tested and improved.
+The R Lesson of the Week (R-LOTW) club will attempt to provide novice users exposure and experience using R as data exploration tool. By the end of the journey (52 weeks?), users should be able to 
 
-**Note**: Octopress requires a minimum Ruby version of `1.9.3-p0`.
+1) efficiently load a dataset; 
+2) organize, edit and join data tables; 
+3) calculate summary statistics and perform 'group by' operations; 
+4) connect to and query from a database; 
+5) generate meaningful and production quality plots for visualizing data; and 
+6) produce professional and reproducible reports (using the `knitr` and `rmarkdown` packages)
 
-## Documentation
+There are 3 Rules to the R-LOTW Club:
 
-Check out [Octopress.org](http://octopress.org/docs) for guides and documentation.
-It should all apply to our current stable version (found in the `master`
-branch). If this is not the case, [please submit a
-fix to our docs repo](https://github.com/octopress/docs).
+- Rule number 1: You never talk about R-LOTW club
+- Rule number 2: You NEVER talk about R-LOTW club
+- Rule number 3: If this is your first time at R-LOTW club you will code tonight
 
-## Contributing
+## Course Structure
 
-[![Build Status](https://travis-ci.org/imathis/octopress.png?branch=master)](https://travis-ci.org/imathis/octopress)
+To keep a sensible balance between commitments to this course and other work requirements and our personal lives, the focus of this course will be weekly exercises. Each week, students in the club will receive an email with at least two files. One will contain the lesson(s) for the week and, if written well, should provide a combination of explanatory text and example code that students can follow along and demonstrate for themselves. In addition to the weekly lesson, students will be given a homework assignment that will require the students to apply what they have learned from the lesson and then develop a report using `knitr` and `rmarkdown`.
 
-We love to see people contributing to Octopress, whether it's a bug report, feature suggestion or a pull request. At the moment, we try to keep the core slick and lean, focusing on basic blogging needs, so some of your suggestions might not find their way into Octopress. For those ideas, we started a [list of 3rd party plug-ins](https://github.com/imathis/octopress/wiki/3rd-party-plugins), where you can link your own Octopress plug-in repositories. For the future, we're thinking about ways to easier add them into our main releases.
-
-
-## License
-(The MIT License)
-
-Copyright © 2009-2013 Brandon Mathis
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-#### If you want to be awesome.
-- Proudly display the 'Powered by Octopress' credit in the footer.
-- Add your site to the Wiki so we can watch the community grow.
+Lessons will go out on Monday mornings and homework will be due the following Monday at noon (local time).
