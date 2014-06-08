@@ -15,6 +15,8 @@ options(width = 80)
 2) Combine 2 data frames using `rbind()` 
 3) ggplot with dive data comparing 2 seals
 
+<!--more-->
+
 ## Review Key Points from Week 2
 
 Week 2 was our first real homework exercise and there were some questions that arose during the week that I thought I would focus on before we dive deeper. As you all know, there are no stupid questions and I welcome your questions during the week. As long as my time allows, I'll not only respond to your question, but also update the website lesson for that week to reflect any changes or clarifications. So, the take home message is to **ask questions** and **refer to the weekly lesson web page** for the most up-to-date information.
