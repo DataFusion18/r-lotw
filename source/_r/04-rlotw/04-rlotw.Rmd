@@ -15,6 +15,8 @@ options(width = 80)
 2) Use a for-loop to combine multiple data frames using `rbind()` 
 3) Use a for-loop to summarize dive data by seal
 
+<!--more-->
+
 ## Introduction to For Loops
 
 One key benefit of learning any programming language is the ability to automate and speed up repetitive tasks. If we revisit the cooking recipe analogy from a few weeks ago, let's suppose you have a recipe that you like so much you want to make it for dinner every night for an entire week. In order to make that recipe, you need a pre-defined set of ingredients and you need to purchase and organize those ingredients every time you make the recipe. So, you could plan to stop by the store every day after work and pick up the same ingredients each day. Or, the weekend before, you could make a trip to Costco, buy everything in bulk and then organize and proportion those ingredients into daily units. You might also label each of those units with number or a day of the week. With the later approach, you would only need to grab the next daily unit of ingredients when you get home and then proceed with the recipe.
@@ -75,8 +77,8 @@ For this week's example, I have created a **behav-data** folder within **R-LOTW/
 The following R code uses the **list.files()** function to return a character vector of file paths for each files inside **behav-data** that ends with the naming form *-Behavior.csv*.
 
 ```{r}
-my_behav_files <- list.files(path='/Users/josh.london/@work/R-LOTW/04-rlotw/behav-data',
-                             # on OS X path='~/@work/R-LOTW/04-rlotw/behav-data' is also valid
+my_behav_files <- list.files(path='/Users/josh.london/@work/r-lotw/source/_r/04-rlotw/behav-data',
+                             # on OS X path='~/@work/r-lotw/source/_r/04-rlotw/behav-data' is also valid
                              # alternative relative path path='behav-data'
                              pattern='*-Behavior.csv', 
                              # the asterix is a wild card used to represent for any character
@@ -87,7 +89,7 @@ my_behav_files <- list.files(path='/Users/josh.london/@work/R-LOTW/04-rlotw/beha
                              )
 ```
 
-**list.files()** requires us to, at a minimum, pass a file path character for the directory/folder we are interested in. In this case, I provided the full file path (`path='/Users/josh.london/@work/R-LOTW/04-rlotw/behav-data'`). Many of you have had difficulties troubleshooting issues related to file paths so this is another opportunity for you to wrap your head around the concept. Since my R Markdown file is saved within the '**/Users/josh.london/@work/R-LOTW/04-rlotw**' folder, I could also have provided the relative path (`path='behav-data'`).
+**list.files()** requires us to, at a minimum, pass a file path character for the directory/folder we are interested in. In this case, I provided the full file path (`path='/Users/josh.london/@work/r-lotw/source/_r/04-rlotw/behav-data'`). Many of you have had difficulties troubleshooting issues related to file paths so this is another opportunity for you to wrap your head around the concept. Since my R Markdown file is saved within the '**/Users/josh.london/@work/r-lotw/source/_r/04-rlotw**' folder, I could also have provided the relative path (`path='behav-data'`).
 
 In addition to providing a file path, we can also provide a file name pattern. Since we are only interested in the files that end with *-Behavior.csv*, we need a way to tell R to only return files that end in *-Behavior.csv* but can be preceded by another character. To do this, we use an asterix to represente a wild card place holder for any character value and any number of characters (`pattern='\*-Behavior.csv'`. In other situations, you may just want to return a list of comma-seperated files (or any other file extension of interest) and so you could use `path='\*.csv'`. Note, the **pattern** parameter for the **list.files()** function expects a character vector, so the naming pattern is surrounded by single quotes.
 
