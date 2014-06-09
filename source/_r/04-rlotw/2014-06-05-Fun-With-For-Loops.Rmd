@@ -1,8 +1,9 @@
 ---
-title: "R-LOTW - Week 4"
-author: "Josh M London"
+title: "Fun With For-Loops"
 date: "June 5, 2014"
-output: html_document
+output:
+  html_document:
+    theme: default
 ---
 
 ```{r,echo=FALSE}

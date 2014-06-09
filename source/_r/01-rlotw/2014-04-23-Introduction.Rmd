@@ -1,8 +1,9 @@
 ---
-title: "R Lesson of the Week (LOTW) - Introduction"
-author: "Josh M London"
+title: "Introduction"
 date: "April 23, 2014"
-output: html_document
+output:
+  html_document:
+    theme: default
 ---
 
 ## Purpose and Objective

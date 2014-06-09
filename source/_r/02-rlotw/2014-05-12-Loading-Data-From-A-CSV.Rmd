@@ -1,8 +1,9 @@
 ---
-title: "R-LOTW - Week 2"
-author: "Josh M London"
+title: "Loading Data from a CSV"
 date: "May 12, 2014"
-output: html_document
+output:
+  html_document:
+    theme: default
 ---
 
 ```{r,echo=FALSE}
