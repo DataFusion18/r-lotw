@@ -1,11 +1,12 @@
 ---
-title: "Introduction"
 date: "April 23, 2014"
 output:
   html_document
 ---
 
-## Purpose and Objective
+## 01 Introduction
+
+### Purpose and Objective
 
 Over the past few years, a number of novice or rare users of R have expressed a desire to learn more about R and, especially, how to use the R programming language to organize, munge and explore data. Too often, users are exposed to the R programming language as a vehicle to learn statistical analysis and not as a vehicle for learning concepts of computer programming, data manipulation and data exploration.
 
@@ -26,13 +27,13 @@ There are 3 Rules to the R-LOTW Club:
 - Rule number 2: You NEVER talk about R-LOTW club
 - Rule number 3: If this is your first time at R-LOTW club you will code tonight
 
-## Course Structure
+### Course Structure
 
 To keep a sensible balance between commitments to this course and other work requirements and our personal lives, the focus of this course will be weekly exercises. Each week, students in the club will receive an email with at least two files. One will contain the lesson(s) for the week and, if written well, should provide a combination of explanatory text and example code that students can follow along and demonstrate for themselves. In addition to the weekly lesson, students will be given a homework assignment that will require the students to apply what they have learned from the lesson and then develop a report using `knitr` and `rmarkdown`.
 
 Lessons will go out on Monday mornings and homework will be due the following Monday at noon (local time). The weekly lessons will come as attache .html files. For best viewing, download these files to your local machine and open in Chrome. If you open by directly clicking on the link from within gmail, the .html file will not render with full formatting.
 
-## Installing R and RStudio
+### Installing R and RStudio
 
 R can be installed from the [CRAN website](http://cran.us.r-project.org/). Windows users working under enterprise security restrictions, should work with their IT staff to install R in a location that allows proper write permissions. For AFSC users, NMML IT staff have instructions for installing R, RStudio, MiKTeX and RTools in a manner that is compatible with our networking and securtiy settings. The most important aspect of the install for AFSC windows users is to, prior to installing any of the software, create a Windows system environment variable R_LIBS and set the value equal to the `C:\Users\user.name\Rlibs`. This will force R to install and manage any libraries and packages within a directory that you have write permissions to.
 
@@ -44,7 +45,7 @@ In addition to R and RStudio, you will need to install support for TeX documents
 
 Lastly, Windows users will need to install the latest version of [RTools](http://cran.r-project.org/bin/windows/Rtools)
 
-## Installing Packages
+### Installing Packages
 
 R has a wide range of built-in capabilities, however, user contributed packages extend the capabilities even further. Future lessons of the week may require installation of specific packages.
 
@@ -57,7 +58,7 @@ install.packages("devtools")
 devtools::install_github("rstudio/rmarkdown")
 ```
 
-## Testing Your Install
+### Testing Your Install
 
 Once you have R, TeX support, RStudio installed, take a moment to review the [documentation](https://support.rstudio.com/hc/en-us/categories/200035113-Documentation) available on the RStudio website. For now, just focus on the [Using RStudio](https://support.rstudio.com/hc/en-us/sections/200107586-Using-RStudio) section. This will give you a general overview of the options and, hopefully, provide some level of comfort working within RStudio. Don't worry too much about all the various options. As you use it more, you will become more comfortable.
 
@@ -65,6 +66,6 @@ Now, let's fire up RStudio and confirm all of our settings and isntallations wen
 
 Once those packages have successfully installed, we'll now try to create a test R-Markdown file and the resulting HTML and PDF files. Within RStudio, go to the File menu, then New File and select R Markdown. This will open up a new script file named `Untitled.Rmd` and it will be pre-filled with basic info as a basic template. To test that you have everything installed correctly, save the file and give it a new name. Then, you'll see a button at the top of the editor window that says `Knit HTML`. Click on that button and you should see some activity in the console window, creation of a .html file and it will open up in a preview window. If this process does not work, you'll need to troubleshoot your installation. Once you have successfully created an HTML file, you can also test creation of PDF by selecting `Knit PDF` from the pull down arrow next to the `Knit HTML` button. If this process does not work, you'll likely need to troubleshoot your TeX installation. Lastly, RStudio has preliminary support for creation of MS Word files. Select `Knit Word` from the same pull down and it should create a Word file version.
 
-## Learning More About R-Markdown
+### Learning More About R-Markdown
 
 R-markdown will be the format for creating the weekly lessons as well as the format for creating and completing the homework assignments. Given this, I suggest you take some time to learn more about R Markdown as well as the generic markdown format. The [R Markdown website](http://rmarkdown.rstudio.com/) provides a good overview of the capabilities.

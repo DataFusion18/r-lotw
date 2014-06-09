@@ -1,5 +1,4 @@
 ---
-title: "Combining 2 Data Frames"
 date: "May 27, 2014"
 output:
   html_document
@@ -9,7 +8,9 @@ output:
 options(width = 80)
 ```
 
-## This Week's Objectives
+## 03 Combining Two Data Frames
+
+### This Week's Objectives
 
 1) Review Key Points from Week 2
 2) Combine 2 data frames using `rbind()` 
@@ -17,11 +18,11 @@ options(width = 80)
 
 <!--more-->
 
-## Review Key Points from Week 2
+### Review Key Points from Week 2
 
 Week 2 was our first real homework exercise and there were some questions that arose during the week that I thought I would focus on before we dive deeper. As you all know, there are no stupid questions and I welcome your questions during the week. As long as my time allows, I'll not only respond to your question, but also update the website lesson for that week to reflect any changes or clarifications. So, the take home message is to **ask questions** and **refer to the weekly lesson web page** for the most up-to-date information.
 
-### Working in RStudio with the R Console, R Scripts and R Markdown
+#### Working in RStudio with the R Console, R Scripts and R Markdown
 
 Many of you have had some exposure to R in the past and have only used the standard R program where you enter commands directly into the R console. For simple commands, quick exploration of your data or just testing code, the R console can be quite useful. However, it has two main drawbacks:
 
@@ -34,7 +35,7 @@ RStudio provides a number of added benefits when using R Scripts. The code you w
 
 Keeping with the same analogy, you can think of R Markdown as a cookbook. Not only does a cookbook combine multiple recipes, it also provides stories, history and context to the recipes. R Markdown is an evolution of your R Script. Many times, you'll be satisfied with an R Script as it will provide simple instructions for a simple analysis. You can even add simple documentation with hastag comments. But, there are a number of times when you will be expected to take the analysis in the R Script and turn it into a report or manuscript. R Markdown allows you to combine those efforts into one reproducible file where analysis is run in concert with creation of the document.
 
-### Understanding file paths
+#### Understanding file paths
 
 Specifying the file paths when reading the \*.csv data files into R proved to be another tricky area for me to explain and for people to grasp. This is to be expected as, these days, many of us interact with files on our computers by clicking through the Explorer or Finder applications. R needs us to specify a text based specification of where the file lives on our computers. This is commonly referred to as the **file path**. There are some significant differences between operating systems in how file paths are specified, but R is mostly aware of these differences and there are some conventions you can adopt that make your code more universal.
 
@@ -64,7 +65,7 @@ The one trick to relative paths is when we are working with R Markdown files. An
 
 Also, you should **always save your R Markdown file** before hitting the knit button.
 
-## Combining Two Data Frames
+### Combining Two Data Frames
 
 In the previous lesson, you learned how to load two separate csv data files into R. Each of these data files was stored in R as separate objects. Since each of these data files has the same structure (e.g. column names and data types), it will be more efficient and flexible if we combine these objects into a single data frame. You can always split the data frame back into separate objects if you change your mind (we'll cover that in the next lesson).
 
@@ -116,7 +117,7 @@ str(seal_dives)
 
 A few things to note and confirm the combination went as planned. The number of observations in **seal_dives** is `r nrow(seal_dives)` which is the same as if you added the number of observations in **seal_99280.df** (`r nrow(seal_99280.df)`) to the number of observations in **seal_99279.df** (`r nrow(seal_99279.df)`). You should also note that the column **Ptt** now lists 2 factor levels (`r levels(seal_dives$Ptt)`).
 
-## Compare Dive Behavior of Two Seals in One ggplot
+### Compare Dive Behavior of Two Seals in One ggplot
 
 In the week 2 lesson and homework we used `ggplot()` to create a histogram of max dive depths. Now that we have data from two seals in the same data frame, we can expand on that to create a single plot that overlays data from both seals into a single histogram. We can accomplish this by adding a few details to the `ggplot()` code. We now specify **seal_dives** as the data parameter and, within the `aes()` function, we specify an additional parameter, `fill=Ptt`. This tells ggplot that we want separate histograms with different fill colors based on the levels in **Ptt**. Lastly, we add a specification, `position="dodge"` to the `geom_histogram()` function to tell ggplot to put the bars side by side.
 
@@ -129,6 +130,6 @@ p <- ggplot(data=seal_dives,aes(x=DepthMax,fill=Ptt)) + geom_histogram(position=
 p
 ```
 
-## Homework
+### Homework
 
 For this week's homework you will be creating an R Markdown file from scratch that describes your methods and produces a single histogram plot comparing **dive durations** of both seals.
