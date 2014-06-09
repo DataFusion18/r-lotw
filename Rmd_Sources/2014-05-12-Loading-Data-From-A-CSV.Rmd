@@ -1,0 +1,172 @@
+---
+title: "Loading Data from a CSV"
+date: "May 12, 2014"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r,echo=FALSE}
+options(width = 80)
+```
+
+## This Week's Objectives
+
+1) Familiarize yourself with RStudio and running R code
+2) Load data from a csv file into R
+3) Explore and subset the structure of the data
+4) Learn about and specify data types for fields
+5) Create a basic plot using the ggplot2 package
+6) Create your first R-Markdown report
+
+<!--more-->
+
+## Getting Familiar with RStudio
+
+Everyone should have completed the week 1 exercise and confirmed that R, RStudio and supporting programs are properly installed. But, in all liklihood, that exercise didn't provide you much of an opportunity to familiarize yourself with RStudio and all the tools it provides. After this week's exercise, you will not be an expert in RStudio, but hopefully you'll have a little bit more experience than before. We'll continue to build on that experience week after week.
+
+### Creating a Project
+
+RStudio allows you to create projects to organize your R code and analysis. At its core, an RStudio project is just a directory on your computer. File organization is a personal thing and you should feel free to organize your work in whatever way works best for you. However, a typical approach is to create a single directory within your user or home directory (OS X users will find this at */Users/user.name*; Windows 7 users will find this at *C:\\Users\\user.name*) and name that directory something like *rwork*,*work*,*analysis*, etc. I have a directory named *\@work*; the \@ symbol insures the directory will sort to the top when browsing through my file structure. Regardless of how you choose to organize and name your directories, I strongly suggest you never include spaces within your directory and file names. I also encourage you to keep your directory structure simple and your file names short.
+
+Within the RStudio preferences settings, you can set a 'default working directory'. I suggest setting this to your specified *work* directory.
+
+Once you have settled on an organizational structure for your R files and analysis, lets create our first RStudio project. Simply go to File>New Project .. and follow the prompts to create a new project from a new directory. I suggest creating a project called *r-lotw*. To keep things organized, you can create separate directories within this project for each week (e.g. *01-rlotw*, *02-rlotw*).
+
+### R Scripts and R-Markdown
+
+RStudio is what is referred to as an Integrated Development Environment (IDE) for R. This means RStudio provides additional tools and options for developing your R code and analysis that are not available within the basic R program. If you have been previously exposed to R, you are probably familiar with the idea of typing code into the console and running your code line by line. This is still possible within RStudio through the Console window.
+
+The use of R Script files in RStudio, however, provides a more flexible option that also allows you to save your work. **This is the preferred method (instead of typing everything in the R console) for interacting with R and developing your analysis.** To create an R Script, simply go to the File menu and select New File ... R Script. At its core, an R Script file is just a plain text file. When editing within RStudio, you'll notice the text is colored according to a theme (you can change this within the Appearance section of the RStudio Preferences) that highlights key words and symbols in R. Also, RStudio will also auto-complete parentheses, quotes, brackets, etc. All of these tools and color codes can be especially useful with learning and troubleshooting your code.
+
+Within an R Script file you can choose to run all of the code in the file in sequence or you can run just code you have selected. The RStudio documentation online has more information on [editing and executing code](https://support.rstudio.com/hc/en-us/articles/200484448-Editing-and-Executing-Code). Please visit this site and read up more on all the options RStudio provides.
+
+While you can use comments (indicated in R with the `#` character) to provide some documentation to code within your R Scripts, the R Markdown file provides a more comprehensive solution for interweaving R code and documentation. The possible outcomes of an R Markdown file ranges from a simple report to a full scientific manuscript ready for submission to a peer reviewed journal. The R Markdown file (in conjunction with the knitr package) provides a streamlined approach for conducting and publishing reproducible research. For that reason, the use of R Markdown and knitr will be a constant focus of the weekly lessons. As with our introduction to R, we'll start simple and build on examples and lessons from week to week.
+
+
+In the lesson for week 1, you created a basic R Markdown file and were successful in creating a simple R Markdown (*.Rmd) file outputting both an html file and a pdf file. If you examined that *.Rmd file, you would likely have noticed a mix of both R code and plain text. The R code is contained within knitr chunks (a R chunk begins with \`\`\`{r} and ends with \`\`\` ) and the rest of the text is written using the markdown plain text markup language. Hopefully, you took the time last week to read up more on [R and Markdown](http://rmarkdown.rstudio.com/). If not, now would be a good time to read up or review before we proceed with this week's lesson.
+
+Seasoned users of R will often use all three interactive tools (R Console, R Script and R Markdown) to develop and produce a final analysis and report. As a beginning R user, you should use an R Script to practice, learn and explore your data. This way, you can see the syntax highlighting, you can save your R Script and pick up where you left off later, and you have a reference script you can refer to in future weeks. Developing and writing an R Markdown file is much easier when you have an R Script to work from.
+
+## Loading a CSV File Into R
+
+If your main objective is to use R for data exploration, then the most important thing you can learn is how to efficiently get your data into R so you can start exploring. The base R language has built in support for importing a wide range of tabular data types. In real world situations, you've most likely been exposed to tabular data in the form of comma separated files or tab separated files. While R does have support for importing from Microsoft Excel, Microsoft Access and a variety of databases, the simplest and most reliable way to import data is to just start with a comma separated version of the file.
+
+For this week's lesson, we'll be importing a CSV file of seal dive data. There are two files included with this week's lesson (*99279-Beahvior.csv* and *99280-Behavior.csv*). We'll use the 99279 animal for our lesson and examples. For your homework, you'll focus on animal 99280.
+
+The core function R uses for reading in tabular data is `read.table()`. To read more about the function, or any function, you can simply type `?read.table` at the command prompt in the R console. This will bring up the built-in help for that function. Functions in R are just an organized and generalized collection of R commands stored as a function that, when called, executes those commands. In most cases, R function are written to accept a variety of options and parameters. These options and parameters are specified within the parentheses that follow a function call. In the case of `read.table()`, these options include things such as the name of the file you want to import, whether there is a header line, what character separates fields, and a variety of other options. The help for `read.table()` will describe each of these options under the **Arguments** section. 
+
+When a programmer creates a function, she often will provide sensible defaults for function arguments. For instance, the function `read.table()` has an argument **header** and the help section shows this as `header = FALSE`. This means that if an argument for **header** is not provided as part of the function call, R will presume FALSE. Note that `file` does not have a default value set. This means you must provide a value for **file** or the function will cause an error.
+
+Since many times, you will be using `read.table()` to read in a comma separated file with a header line, R has created a function, `read.csv()`, which is a special version of `read.table()` with sensible options for reading in a typical CSV file. In most cases, you'll only need to provide the path and name for your CSV file. But, know that R is flexbile enough to accomodate almost every situation.
+
+So, let's read in our first CSV file. Make sure both of the CSV files are stored within your **r-lotw/02-rlotw** project directory (or similar location specific to your computer). When specifying file paths in R, they are provided as a character string and should be surrounded by single quotes. You can either provide an absolute path (i.e., all directories from the system root) or a relative path. For simplicity, we'll start by using relative paths.
+
+If you have created an RStudio project the your R working directory is set to that project's folder. You can confirm the location of your home directory by looking at the top of the Console window or by typing `getwd()` in the console. Since we are using relative paths, all of our path character strings will start from your home directory. A key exception, however, is when working with R Markdown files (.Rmd). R Markdown and the knitr package presume all relative paths are relative to where the .Rmd file is saved.
+
+So, if I had a directory in my **r-lotw** project named **02-rlotw** and I placed the seal dive behavior csv files in this folder, the path string I would pass to `read.csv()` would be **02-rlotw/99279-Behavior.csv**. But, when working on an Rmd file, I would pass a path relative to where the Rmd file is saved. In my case, I have an **02-rlotw.Rmd** file inside the **02-rlotw** directory. So, I only need to pass **99279-Behavior.csv** as the path.
+
+A final note before we get started. When you read data into R, you need to give it a name so you can reference that data later on. R has a special combination of characters, `<-`, it uses to allow you to specify that data or values should be stored as a given name or object. In this case, we are going to store the data from the csv as an object we'll call `seal_99279.df`. The .df is just a nomenclature I use to specify objects that are data frames. Data frames are R's way of representing tabluar data similar to a spreadsheet. In reality, you can name the object almost anything you want (there are some limitations, for example, object names cannot start with a numeric value, so `99279.df` would not be valid.)
+
+```{r}
+# ATTENTION: you may need to use '02-rlotw/99279-Behavior.csv' for the file path
+# if you are running this in the console instead of within an R Markdown file
+seal_99279.df <- read.csv(file='99279-Behavior.csv',
+                     stringsAsFactors = FALSE)
+# stringsAsFactors is set to FALSE because we are going to specify data types on our own
+```
+
+Now that you have the data loaded into R, you'd like to confirm everything came in as expected and to begin exploring the information. One of your panes in RStudio likely has a tab named Environment. You can think of the Environment as *being inside R's head* as this reflects all of the objects and information R has stored in memory. It is important to recognize that R's Environment (i.e. head) does not persist between sessions. So, if you shutdown RStudio, everything listed in the Environment tab will disappear.
+
+If you switch to the Environment tab, your `seal_99279.df` data object should be listed. It will tell you there are `r nrow(seal_99279.df)` observations of `r ncol(seal_99279.df)` variables. By clicking on the blue arrow to the left of your object listing, RStudio will display each of the `r ncol(seal_99279.df)` variables followed by their current data type (e.g. integer, character, numeric) and a listing of the first few values for each variable. Finally, if you want to actually look at the data, RStudio provides a viewer option. To the right of the data object listing, there will be a small icon that looks like a spreadsheet. Click on this and RStudio will open up a window displaying the data in a tabular format.
+
+These tools are a convenience that RStudio provides, but similar results can be created through the command line. The `str()` (structure) provides information on the make up of an object, `nrow()` and `ncol()` will return the number of rows and columns in a data frame and `class()` will return the data type for an object.
+
+```{r}
+class(seal_99279.df)
+str(seal_99279.df,width=80,strict.width="cut")
+nrow(seal_99279.df)
+ncol(seal_99279.df)
+```
+
+## Subsetting a Data Frame
+
+There are a number of data variables within the seal behavior data that we are not interested in at this point. To simplify the process and make things easier to work with, we are going to subset the data frame and limit it to just a few variables. We'll cover subsetting in more detail next week, so, for now, let us just run the following code
+
+```{r}
+# replace seal_99279.df with a subset of columns
+seal_99279.df <- seal_99279.df[,c('Ptt','Start','End','What','DepthMax','DurationMax')]
+str(seal_99279.df,width=80,strict.width="cut")
+```
+
+R uses the square brackets (`[]`) to subset an object. Within the square brackets, a row and column index is used to select given data values. An index in R starts with 1. So, if you wanted just the first 20 rows of a data frame, you would type `mydata[1:20,]`. If you wanted the first 20 rows and just the first 3 columns, then you would type `mydata[1:20,1:3]`. 
+
+Also, since we are only interested in 'Dive' data for this week's exercise, let's further subset the data to only include rows where the **What** variable is equal to *Dive*.
+
+```{r}
+# replace seal_99279.df with a subset of rows where What is equal to Dive
+seal_99279.df <- seal_99279.df[seal_99279.df$What == 'Dive',]
+str(seal_99279.df,width=80,strict.width="cut")
+```
+
+Again, some of this is advanced topics we'll cover in the next few weeks. In R, the row/column indexes for subsetting can also be vectors of **TRUE** or **FALSE** values. Only the **TRUE** values are kept. In this case, the statement `seal_99279.df$What == 'Dive'` evaluates to **TRUE** for each record when the **What** column is equal to *Dive*. Also note, in R, the double equals (**==**) is used when comparing two values. Imagine R creating a vector (or single column) of `r nrow(seal_99279.df)` **TRUE** or **FALSE** values and then removing all rows from the `seal_99279.df` data frame where the corresponding value is **FALSE**
+
+Ok, enough for advanced topics. Using what you have learned so far, go ahead and explore the seal_99279.df data frame. 
+
+1) How many records are there?
+2) How many columns/variables?
+3) What class are the Start and End variables?
+4) How about the class for DepthMax?
+
+## Setting Data Types
+
+The `seal_99279.df` data frame has three data types represented: integer (int), character (chr) and numeric (num). These are three of the most basic data types and it is important to understand the differences between these data types and to understand that some functions or expected behaviors in R are dependent upon the data type of your object. When you import data via `read.csv()` R looks at a sub-sample of the values and tries to determine the best data type. In this case, R sees that the **Ptt** column is all numbers with no decimal values. So, it decides to set the data type to integer. **DepthMax** has decimal values so R assigns it the numeric data type. The **What** variable is set to character. And, while we may look at the **Start** and **End** values and recognize those as dates and times, R needs some additional information before assigning those to actual date-time data types. We will cover those issues next week.
+
+For now, we are going to accept most of the default data type decisions. However, there is a special data type in R called a 'factor' that we will focus on for this week. The easiest way to think of a factor is as a special type of character data where the number of unique values is usually much less than the total number of records. You can also think of factors as categories. In this example, before we subset the data frame, the **What** column consisted of three values: *Message*, *Surface* and *Dive*. While, for many basic exercises, we could leave this as a character data type. The better practice would be to convert this column to a factor data type. The same could be said for **Ptt**. While *99279* is, technically, an integer, for this data set it serves to identify an individual tag and would be better represented as a factor. 
+
+To make that conversion, we'll use the function `as.factor()`. You can read up more on the `as.factor()` function and factors, in general, by typing `?as.factor` in the R console.
+
+```{r}
+seal_99279.df$Ptt <- as.factor(seal_99279.df$Ptt)
+seal_99279.df$What <- as.factor(seal_99279.df$What)
+str(seal_99279.df,width=80,strict.width="cut")
+
+# the arguments 'width' and 'strict.width="cut"' force R to limit the text width
+# of the resulting output from str(). This is the best way to keep the PDF/Latex
+# output looking correct and not running of the page into the margins
+```
+
+## More Data Exploration
+
+Now that you have your dataset somewhat organized and your datatypes in order, we can do some further exploration of the data with some simple functions. Instead of regurgitating information available through the built-in help here, I'll expect you to learn more about these functions on your own.
+
+```{r}
+min(seal_99279.df$DepthMax)
+max(seal_99279.df$DepthMax)
+range(seal_99279.df$DepthMax)
+mean(seal_99279.df$DepthMax)
+```
+
+## Histogram Plot of Dive Max Depth Values
+
+Histograms are a common means of plotting data values and understanding the underlying distribution of the data. R has built-in functions and capabilities for creating a variety of plots, including histograms. However, in recent years, a separate R package called *ggplot2* has become a popular method for creating professional quality plots with minimal effort. We will focus nearly exclusivley on *ggplot2* as our plotting engine.
+
+The first thing you need to do is comfirm *ggplot2* is installed. We do this by calling the `library()` function. This is how you load packages you've installed into the R session. While you can call the library function from anywhere in your R code, it is typical to do this at the beginning of an R script or R markdown file. If you get an error, then you'll need to revisit the week one lesson and follow the steps describing how to install R packages within RStudio.
+
+```{r}
+library(ggplot2)
+```
+
+While some documentation for *ggplot2* exists within the normal R help (e.g. `?`), the author of *ggplot2* maintains a [website specific for documentation](http://docs.ggplot2.org/current/). I suggest you bookmark this site and use it as a reference when developing plots. For our histogram plots, we'll be using the [geom_histogram](http://docs.ggplot2.org/current/geom_histogram.html) plot type. For now, don't worry too much about the details of ggplot. The beauty of ggplot is that you can, with minimal code, develop nice, professional looking plots with sensible defaults.
+
+```{r}
+p <- ggplot(seal_99279.df,aes(x=DepthMax)) + geom_histogram() + 
+  ggtitle('Max Dive Depths for a Ribbon Seal')
+p
+```
+
+## Creating Your First R Markdown Report
+
+Your homework this week is to create an R Markdown report describing the dive behavior dataset for seal 99280. Your report should include information on the number of observations, number of measured variables, the range of values for **DepthMax** and mean values for **DepthMax**. You should demonstrate your ability to examine data types and convert select variables to factors. Lastly, your report should include a histogram plot of DepthMax values.
+
+To provide a template, I have created an example report for seal 99279 and included the Rmd file with this week's email. I will accept either an HTML or PDF version of your report. Extra credit will be given to those who include additional information and plots for DurationMax for dives and for surface behavior.
