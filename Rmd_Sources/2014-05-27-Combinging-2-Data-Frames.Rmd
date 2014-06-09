@@ -2,8 +2,7 @@
 title: "Combining 2 Data Frames"
 date: "May 27, 2014"
 output:
-  md_document:
-    variant: markdown_github
+  html_document
 ---
 
 ```{r,echo=FALSE}

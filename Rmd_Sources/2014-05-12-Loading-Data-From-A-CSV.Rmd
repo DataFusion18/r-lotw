@@ -2,8 +2,7 @@
 title: "Loading Data from a CSV"
 date: "May 12, 2014"
 output:
-  md_document:
-    variant: markdown_github
+  html_document
 ---
 
 ```{r global_options,echo=FALSE}
