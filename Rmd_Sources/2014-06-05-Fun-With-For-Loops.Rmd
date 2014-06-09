@@ -20,6 +20,8 @@ options(width = 80)
 
 One key benefit of learning any programming language is the ability to automate and speed up repetitive tasks. If we revisit the cooking recipe analogy from a few weeks ago, let's suppose you have a recipe that you like so much you want to make it for dinner every night for an entire week. In order to make that recipe, you need a pre-defined set of ingredients and you need to purchase and organize those ingredients every time you make the recipe. So, you could plan to stop by the store every day after work and pick up the same ingredients each day. Or, the weekend before, you could make a trip to Costco, buy everything in bulk and then organize and proportion those ingredients into daily units. You might also label each of those units with number or a day of the week. With the later approach, you would only need to grab the next daily unit of ingredients when you get home and then proceed with the recipe.
 
+<!--more-->
+
 For-loops require three components:
 
 1) a vector of values (ingredients)
