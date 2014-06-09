@@ -6,8 +6,10 @@ output:
     variant: markdown_github
 ---
 
-```{r,echo=FALSE}
+```{r global_options,echo=FALSE}
 options(width = 80)
+require(knitr)
+opts_chunk$set(fig.path="images/")
 ```
 
 ## This Week's Objectives
@@ -159,7 +161,7 @@ library(ggplot2)
 
 While some documentation for *ggplot2* exists within the normal R help (e.g. `?`), the author of *ggplot2* maintains a [website specific for documentation](http://docs.ggplot2.org/current/). I suggest you bookmark this site and use it as a reference when developing plots. For our histogram plots, we'll be using the [geom_histogram](http://docs.ggplot2.org/current/geom_histogram.html) plot type. For now, don't worry too much about the details of ggplot. The beauty of ggplot is that you can, with minimal code, develop nice, professional looking plots with sensible defaults.
 
-```{r}
+```{r 2014-05-12-fig1-max-dive-depths-ribbon}
 p <- ggplot(seal_99279.df,aes(x=DepthMax)) + geom_histogram() + 
   ggtitle('Max Dive Depths for a Ribbon Seal')
 p
