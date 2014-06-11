@@ -206,6 +206,10 @@ head(seal_data)</code></pre>
 ## 66217         425
 ## 66218          67</code></pre>
 <p>Great! Now that we have all this data in a single data frame, we have a number of analyses, plots and other exploratory tasks we can proceed with. But, that will have to wait for the next lesson.</p>
+<p><strong>update: 2014-06-11</strong></p>
+<p>As proof that there’s always something new to learn regarding R, I just came across an article that introduced me to the <strong>rbindlist()</strong> function within the <strong>data.table</strong> package (you’ll need to install this package before you can use the function). This function does just as you might imagine, it rbinds data frames stored in a list. The result should be the same as with <code>do.call(&quot;rbind&quot;,myDataFrame)</code>, however, the speed will be significantly faster with large datasets.</p>
+<pre class="r"><code>require(data.table)
+seal_data &lt;- rbindlist(seal_list)</code></pre>
 </div>
 <div id="homework" class="section level3">
 <h3>Homework</h3>

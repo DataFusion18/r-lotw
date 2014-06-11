@@ -151,6 +151,7 @@ If you search around the internet, you may see another approach to accomplish th
 seal_data <- do.call("rbind",seal_list)
 ```
 
+
 Now we have a single data frame with all the data from 16 different data frames. On my computer, this entire process takes 1.878 seconds !
 
 Just to convince ourselves that we actually have all the data from our csv files into our **seal_data** data frame, lets run few tests
@@ -173,6 +174,16 @@ tail(seal_data)
 ```
 
 Great! Now that we have all this data in a single data frame, we have a number of analyses, plots and other exploratory tasks we can proceed with. But, that will have to wait for the next lesson.
+
+**update: 2014-06-11**
+
+As proof that there's always something new to learn regarding R, I just came across an article that introduced me to the **rbindlist()** function within the **data.table** package (you'll need to install this package before you can use the function). This function does just as you might imagine, it rbinds data frames stored in a list. The result should be the same as with `do.call("rbind",myDataFrame)`, however, the speed will be significantly faster with large datasets.
+
+```{r}
+require(data.table)
+seal_data <- rbindlist(seal_list)
+```
+
 
 ### Homework
 
