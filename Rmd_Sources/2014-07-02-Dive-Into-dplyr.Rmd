@@ -1,0 +1,214 @@
+---
+title: "06 Diving Into dyplyr"
+author: "Josh M London"
+date: "July 2, 2014"
+output:
+  html_document: default
+---
+
+```{r,echo=FALSE}
+options(width = 80)
+```
+
+## Diving Into dplyr
+
+### This Week's Objectives
+
+1) Introduction to the dplyr and reshape2 packages
+2) Reading and summarizing seal dive histogram data
+3) Create dive summary tables with basic statistics
+
+### Introduction to dplyr and reshape2
+
+Carey stopped by my office a few days ago asking for some help summarizing dive histogram data for tags deployed on Northern Fur Seals. Since I was way overdue for an R Lesson of the (occasional) Week, I thought I would help Carey out and also develop a lesson to introduce you to some packages that make data manipulation much easier in R.
+
+**dplyr** and **reshape2** are packages that are designed to simplify tasks associated with manipulation of data frames and summarizing data by groups of interest. If you think about common problems you are often trying to solve with data in R (or excel, or a database of your choice), I guarantee you'll often find yourself wanting to do one or more of the following
+
+1) re-arrange the data structure
+2) create new columns that are derived from existing columns
+3) filter columns or filter rows
+4) re-order the data
+5) group records by common values
+6) summarize values or statistics by group
+
+All of these tasks can be accomplished using base R, however, the **dplyr** and **reshape2** packages will make these tasks much easier. 
+
+<!--more-->
+
+### Reading and Summarizing Seal Dive Histogram Data
+
+Dive behavior data from a deployed tag is often transmitted in the form of histograms. Here, we are going to work with data produced from a Wildlife Computers tag. Each bin in the histogram is pre-determined when the tag is programmed and the tag processes dive depth values and summarizes the behavior into these histogram bins. For behaviors like dive depth, the histogram bins represent a count of dives to max dive depth ranges. For time at depth, the histogram bins report the time spent at a depth ranges. And, for dive duration, the histogram bins represent ranges of time/duration and the histogram values represent counts of dives with durations matching those bins.
+
+Wildlife Computers has developed a *histos.csv* file structure that allows them to include all of the histogram data types into one flat file. This is a convenient option for storing data processed from the tags, but also means the data will require some manipulation before we can really work with it and conduct meaningful analyses.
+
+#### Read the histos.csv Data File
+
+First, lets read the data into R. You can obtain a copy of the data from [Google Drive](https://drive.google.com/a/noaa.gov/file/d/0B9-O9xOJGojqc0NwR24zX2tweEk/edit?usp=sharing) and we'll be using our **read.csv** skills from before. Note the use of the `skip=2` parameter. The data file actually has two initial lines of data that do not comform to the comma separated structure, so we include the skip paramater so R doesn't try to read in the first 2 lines.
+
+```{r read-nfs-csv}
+nfs.in <- read.csv('dive-data/kuhn-nfs-histos-2010.csv',
+                   stringsAsFactors=FALSE,
+                   skip=2)
+```
+
+#### Clean the Data
+
+There are multiple histogram types ('HistType') included in the data file, so we need to filter the information to just include those that are for 'DiveDepth'. We could use R's built-in subsetting functions, but the `filter()` function within the **dplyr** package is used in this case so we can focus on **dplyr** tools.
+
+```{r filter-nfs-dive}
+library(dplyr)
+nfs.dive <- filter(nfs.in,HistType == "DiveDepth")
+```
+
+There are 72 total bins included in the data file, but only a subset of those are used for the 'DiveDepth' histograms. Without knowing how many bins were specified in the original tag programming we cannot not know which bins to keep for our analysis. If you examine the data frame, you'll notice a number of the bin columns include NA values. Any column with all NA values means no histogram values were recorded for that bin. So, we need R to examine the data frame and only keep the columns that have at least one non-NA value.
+
+In order to check each of the columns in our **nfs.dive** for those with all NA values, we are going to use the `all()` and `is.na()` functions. `is.na()` does just as you would suspect and returns TRUE/FALSE if a value is NA. `all()` examines a vector of logical vectors (e.g. TRUE/FALSE) and returns TRUE if all of the values in the vector are TRUE.
+
+Since, we are interested in keeping columns for which all of the values are *NOT* NA, then we need to negate the `all()` function by placing an exclamation point in front of it. In R, you can read `!` as "not". For example, `!=` corresponds to "not equal". In this case, `!all()` corresponds to "not all".
+
+So, if we wanted to create a function that evaluates a vector (or column of a data frame) and return TRUE when all of the values are *NOT* NA, it might look something like the following
+
+```{r col-vals-not-na}
+ColValsNotNA <- function(x) {
+  !all(is.na(x))
+}
+```
+
+With this function, we could loop over each of the columns in **nfs.dive** and determine whether or not there are any non-NA values in the dataset. Since you are now familiar with for-loops, you should be able to follow along with the following code
+
+```{r for-loop-demo}
+# create a vector to store our logical (TRUE/FALSE) values
+cols_not_na <- vector(mode="logical",length=length(colnames(nfs.dive)))
+# get a list of all the column names for nfs.dive
+cols <- colnames(nfs.dive)
+
+# loop over each column and run our function. Note, we are passing each column
+# name as the column index to subset nfs.dive. For example, nfs.dive[,"DeployID"] would return
+# just the DeployID column.
+for (i in 1:length(cols)) {
+  cols_not_na[i] <- ColValsNotNA(nfs.dive[,cols[i]])
+}
+```
+
+```{r cols-not-na}
+cols_not_na
+```
+
+Now, that we have a logical vector telling us which columns are not all NA values, we can subset *nfs.dive* to include only those columns
+
+```{r subset-nfs-dive-nonna}
+nfs.dive.subset <- nfs.dive[,cols_not_na]
+head(nfs.dive.subset)
+```
+
+**Warning: Advanced R Geek-Out**
+
+As is often the case, there is another way to accomplish the same task in R. This involves using the `sapply()` function instead of a for-loop. `sapply()` is a function that will evaluate a particular function across every element in a given object and return the results as a simple vector. As you can imagine, there are a number of cases when `sapply()` could be used instead of a for-loop. Neither of the approaches is more right or more correct. You may read on the internet that `sapply()` or similar functions are faster. In some cases, this is true. But, sometimes for loops are quicker to write, quicker to troubleshoot and debug and easier to read.
+
+Below, is the same code using `sapply()`
+```{r remove-na-cols}
+nfs.dive <- nfs.dive[,sapply(nfs.dive, function(x) !all(is.na(x)))]
+
+# lets compare the two outcomes to confirm we get the same answer
+head(nfs.dive.subset)
+head(nfs.dive)
+```
+
+**End Advanced R Geek-Out**
+
+Now, just because we have removed any columns in our data frame that consiste of all NA values, doesn't mean we have removed all NA values from the dataset. Again, to save bandwidth and minimize the amount of data transmitted, zero-value histogram data are not always transmitted. Wildlife Computers only transmits values to the deepest depth a dive was recorded for a given time period. So, for our analysis purposes, we know that any remaining NA values should be converted to zero. Again, we'll rely on our friend `is.na()` to help us out
+
+```{r na-to-zero}
+nfs.dive[is.na(nfs.dive)] <- 0
+```
+
+#### Re-Structure the Data from Wide to Long
+
+The histogram data file is structured as a 'wide' data frame where each record represents a specific time period for each deployid and then each dive depth bin has its own column. This works fine for data storage and presenting data in a spreadsheet for human consumption. But, the structure is less flexible for data analysis in R. So, we need to take this 'wide' data and make it 'long'.
+
+We want each record to represent a unique time period, deployid AND dive depth bin. To do this by hand would be very tedious. The **reshape2** package makes this easy for us with the `melt()` function.
+
+The melt function is fairly straight forward. You provide the data frame and the variables that you want to maintain as columns in the melted data frame. `melt()` calls these 'id.vars'. Here, the first 11 columns are specified. We also provide a character value for the new columns melt will create.
+
+```{r melt-nfs}
+library(reshape2)
+nfs.melt <- melt(nfs.dive,id.vars = 1:11,variable.name="DiveDepthBin",value.name="NumDives")
+
+head(nfs.melt)
+```
+
+Take a moment and ponder how you would produce the same results within Excel.
+
+#### Final Adjustments to the Data
+
+The new variable column, DiveDepthBin, is created by the melt function as a factor. This is what we want, although, the inherent order of the factor levels is in the wrong order to represent dive depth ... seals dive *down* to higher depth values. *Bin1* is the shallowest dive and, when we create our plots, we want *Bin1* to be at the top of the Y axis. To re-order a factor, you just create/replace the existing factor with a new factor and provide a *levels* parameter with a list of factor values in the order you desire. To make things simple, I use the `rev()` function to simply reverse the existing order.
+
+```{r reorder-divedepthbin}
+nfs.melt$DiveDepthBin <- factor(nfs.melt$DiveDepthBin,
+                                levels=rev(levels(nfs.melt$DiveDepthBin)))
+```
+
+We also want to make sure the DeployID data type is set to factor. The default import for `read.csv()` will create DeployID as an integer.
+
+```{r deployid-factor}
+nfs.melt$DeployID <- as.factor(nfs.melt$DeployID)
+```
+
+Lastly, a little bit of tidying up the data frame by using the `arrange()` function within the **dplyr** package. This function will arrange (sort) the data frame by which ever column names are provided. In this case, we want the data frame arranged by DeployID, then Date and then DiveDepthBin
+
+```{r arrange-df}
+nfs.melt <- arrange(nfs.melt,DeployID,Date,DiveDepthBin)
+```
+
+### Create dive summary tables with basic statistics
+
+Our nfs.melt data frame now has `r nrow(nfs.melt)` records, but knowing the number of seals represented in this data set is more important. Even more informative, however, would be knowing how many records are in the dataset for each seal. The ddply package has a number of functions that will help us out.
+
+First, let's just use base R to figure out how many seals there are in the dataset
+
+```{r unique-seals}
+levels(nfs.melt$DeployID)
+length(levels(nfs.melt$DeployID))
+```
+
+To get started with **dplyr** we first need to specify our grouping using the `group_by()` function. This is relatively straight forward as you simply provide your data frame of interest and then at least one column that you would like to use as your group identifier. In our case, we will want to group by DeployID as this is how we identify a seal. We will also assign our grouped data to a new object so we don't overwrite our **nfs.melt** data frame.
+
+```{r group-nfs-melt}
+seals <- group_by(nfs.melt, DeployID)
+```
+
+Now that we have our data grouped by seal, lets count up the number of records for each seal using the `n()` function
+
+```{r summarize-seals}
+summarize(seals, n = n())
+```
+
+That's all fine and dandy, but you are probably realizing that the number of records is not very informative. So, let's do some additional analysis to examine the values record in our *NumDives* column, by *DiveDepthBin* but grouped across seals.
+
+```{r group-nfs-divebins}
+seals <- group_by(nfs.melt, DiveDepthBin)
+```
+
+```{r group-nfs-deploy-bin}
+dive_summary <- summarize(seals, 
+          MaxNumDives = max(NumDives),
+          AvgNumDives = mean(NumDives),
+          SDNumDives = sd(NumDives))
+```
+
+```{r dive-summary-out}
+dive_summary
+```
+
+And, finally, present the data in a prettier table format
+
+```{r results='asis',echo=FALSE}
+library(pander) # here, we are using the pander package to make a pretty looking table
+pandoc.table(dive_summary,
+          style = "rmarkdown",split.table=160,
+          caption = "Table of Summary Dive Statistics, by Dive-Depth Bin, for Northern Fur Seals")
+```
+
+### Homework
+
+Your homework is for each of you to look through this exercise and identify datasets that you are responsible for, or just interested in, that would benefit from this type of 'group-by' analysis. Once you have identified a dataset, send me a csv file via email (try to keep the datasets of a reasonable size) along with questions and statistics you'd like to address. I'll create the next few "weekly" lessons based on these submissions. 
